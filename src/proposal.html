@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noteworthy', 'Comic Sans MS', cursive;
+            background: linear-gradient(135deg, #4a1a1a 0%, #7d2828 50%, #4a1a1a 100%);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #heartsCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .heart-emoji {
+            font-size: 5em;
+            margin: 30px auto;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(1.1);
+            }
+            50% {
+                transform: scale(1);
+            }
+        }
+
+        h1 {
+            font-size: 4em;
+            color: #ffb3c1;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        p {
+            font-size: 1.8em;
+            color: #ffd4dc;
+            margin-bottom: 50px;
+            line-height: 1.6;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #8b2332 0%, #b8374a 100%);
+            color: #fff;
+            padding: 20px 50px;
+            font-size: 1.5em;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            font-family: 'Noteworthy', 'Comic Sans MS', cursive;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        #noBtn {
+            background: linear-gradient(135deg, #6b1f2a 0%, #8b2332 100%);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            p {
+                font-size: 1.3em;
+            }
+
+            .btn {
+                padding: 15px 35px;
+                font-size: 1.3em;
+            }
+        }
+
+        /* Confetti styles */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f0f;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) translateX(var(--drift, 0)) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .confetti {
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 8em;
+            color: #ffb3c1;
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .celebration.show {
+            animation: yayAnimation 2.5s ease-out forwards;
+        }
+
+        @keyframes yayAnimation {
+            0% {
+                transform: translate(-50%, -50%) scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            30% {
+                transform: translate(-50%, -50%) scale(1.3) rotate(10deg);
+                opacity: 1;
+            }
+            40% {
+                transform: translate(-50%, -50%) scale(0.9) rotate(-5deg);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1) rotate(3deg);
+            }
+            60% {
+                transform: translate(-50%, -50%) scale(0.95) rotate(-2deg);
+            }
+            70% {
+                transform: translate(-50%, -50%) scale(1.05) rotate(1deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .overlay.show {
+            animation: overlayFade 2.5s ease-out forwards;
+        }
+
+        @keyframes overlayFade {
+            0% {
+                opacity: 0;
+            }
+            30% {
+                background: rgba(0, 0, 0, 0.4);
+                opacity: 1;
+            }
+            100% {
+                background: rgba(0, 0, 0, 0.4);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="heartsCanvas"></canvas>
+    <div class="overlay" id="overlay"></div>
+    <div class="celebration" id="celebration">Yay! 🎉</div>
+
+    <div class="container">
+        <div class="heart-emoji">❤️</div>
+        <h1>Will You Be My Valentine?</h1>
+        <p>Would you make me the happiest person<br>and go on a date with me?</p>
+        <div class="button-container">
+            <a href="cards.html" class="btn" id="yesBtn">Yes!</a>
+            <button class="btn" id="noBtn">No</button>
+        </div>
+    </div>
+
+    <script>
+        // Animated hearts canvas background
+        const canvas = document.getElementById('heartsCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const hearts = [];
+        const heartCount = 30;
+
+        class Heart {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 20 + 10;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 2 - 1;
+                this.opacity = Math.random() * 0.3 + 0.1;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = '#ffb3c1';
+                ctx.font = `${this.size}px Arial`;
+                ctx.fillText('♥', this.x, this.y);
+                ctx.restore();
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+        }
+
+        for (let i = 0; i < heartCount; i++) {
+            hearts.push(new Heart());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hearts.forEach(heart => {
+                heart.update();
+                heart.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        
+        // No button escape behavior
+        noBtn.addEventListener('mouseover', function() {
+            const x = Math.random() * (window.innerWidth - 200);
+            const y = Math.random() * (window.innerHeight - 100);
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        });
+
+        // Yes button celebration
+        yesBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Show overlay
+            const overlay = document.getElementById('overlay');
+            overlay.classList.add('show');
+            
+            // Show celebration message with delay
+            const celebration = document.getElementById('celebration');
+            setTimeout(() => {
+                celebration.classList.add('show');
+            }, 100);
+            
+            // Create confetti in waves
+            setTimeout(() => createConfettiWave(50), 0);
+            setTimeout(() => createConfettiWave(50), 200);
+            setTimeout(() => createConfettiWave(50), 400);
+            
+            // Redirect after celebration
+            setTimeout(() => {
+                window.location.href = 'cards.html';
+            }, 3000);
+        });
+
+        function createConfettiWave(count) {
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => createConfetti(), i * 30);
+            }
+        }
+
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            
+            // Random colors
+            const colors = ['#ff6b9d', '#c44569', '#ffa502', '#ff6348', '#ffd32a', '#ff4757', '#ffb3c1', '#ffd4dc', '#a29bfe', '#fd79a8'];
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            // Random position across the top
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.top = -20 + 'px';
+            
+            // Random size
+            const size = Math.random() * 8 + 5;
+            confetti.style.width = size + 'px';
+            confetti.style.height = size + 'px';
+            
+            // Random shapes - some squares, some circles
+            if (Math.random() > 0.5) {
+                confetti.style.borderRadius = '50%';
+            }
+            
+            // Varied animation
+            const duration = Math.random() * 2 + 2;
+            confetti.style.animationDuration = duration + 's';
+            confetti.style.animationDelay = Math.random() * 0.3 + 's';
+            
+            // Add random horizontal drift
+            const drift = (Math.random() - 0.5) * 100;
+            confetti.style.setProperty('--drift', drift + 'px');
+            
+            document.body.appendChild(confetti);
+            
+            // Remove after animation
+            setTimeout(() => {
+                confetti.remove();
+            }, (duration + 0.3) * 1000 + 1000);
+        }
+    </script>
+</body>
+</html>
